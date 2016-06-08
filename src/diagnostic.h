@@ -10,7 +10,7 @@
 #include "stdint.h"
 #include "board.h"
 
-double getAverage( const int arr[], int size);
+void getAverage(const uint8_t arr[], int size, double *avg_wsk);
 
 
 #endif /* DIAGNOSTIC_H_ */

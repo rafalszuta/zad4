@@ -253,12 +253,13 @@ int main(void)
 	/* Toggle LED on other board via I2C */
 
 
-	uint8_t temp;
-	static volatile uint8_t tempTab[10]={0};
+	uint8_t temp;  //temperature
+	uint8_t tempTab[10]={0};   //array with temperatures
 	int i = 0;
-	int repeat=0;
-
-	double avg;
+	int repeat=1;   //number of measurement
+	double avg=0;   //average
+	double *avg_wsk;
+	avg_wsk=&avg;
 
 	while (1) {
 		/* Sleep until a state change occurs in SysTick */
@@ -284,34 +285,32 @@ int main(void)
 			/* Get LED state on slave device */
 			readI2CMaster(I2C_ADDR_7BIT_1, &ledState, &temp);
 
-
 			if (i>tempNumber)
 			{
-
 				i=0;
 			}
-
-
-			DEBUGOUT("Powtorzenie nr %d\n", repeat);
-			repeat++;
 
 			tempTab[i]=temp;
 			DEBUGOUT("Temp: %d\n", temp);
 
-			for(int j=0;j<tempNumber;j++)
-			{
-				DEBUGOUT("TempTab[%d]: %d\n", j,tempTab[j]);
-			}
-
-			// pass pointer to the array as an argument.
-			avg = getAverage(tempTab, tempNumber);
-
-			DEBUGOUT("Average: %.3g\n", avg);
+			getAverage(tempTab, repeat, avg_wsk);
+			DEBUGOUT("Average: %lf\n", *avg_wsk);
 			i++;
+			repeat++;
+
+////////////////////////////////////////////////////////////////////////////
+			Chip_GPIO_SetPinDIRInput(LPC_GPIO_PORT,0,15);
+			Chip_GPIO_SetPinDIRInput(LPC_GPIO_PORT,0,16);
+			Chip_GPIO_SetPinDIRInput(LPC_GPIO_PORT,0,17);
+
+			DEBUGOUT("Pin 15: %d\n", Chip_GPIO_GetPinState(LPC_GPIO_PORT,0,15));
+			DEBUGOUT("Pin 16: %d\n", Chip_GPIO_GetPinState(LPC_GPIO_PORT,0,16));
+			DEBUGOUT("Pin 17: %d\n", Chip_GPIO_GetPinState(LPC_GPIO_PORT,0,17));
+
+////////////////////////////////////////////////////////////////////////////
 
 			break;
 		}
-
 
 		lastState = state;
 

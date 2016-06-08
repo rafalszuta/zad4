@@ -8,20 +8,17 @@
 #include "diagnostic.h"
 
 
- double getAverage( const int arr[ ], int size)
+void getAverage(const uint8_t array[], int size, double *avg_wsk)
  {
  	int j= 0;
- 	double sum;
- 	double avg;
+ 	int sum=0;
 
  	for (j = 0; j < size; j++)
  	{
- 		DEBUGOUT("Funkcja: Tab[%d]=%d\n", j,arr[j]);
- 		sum += arr[j];
+ 		sum += array[j];
  	}
 
-	avg = sum / size;
- 	return avg;
+	*avg_wsk = 1.0*sum/size;
  }
 
 
